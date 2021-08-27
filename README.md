@@ -4,6 +4,21 @@ Elaborar um app simples em React para o frontend de uma ToDo List.
 - O usuário deve poder cadastrar, editar e excluir tarefas.
 - O usuário deve poder ver uma lista com todas as suas tarefas, ou ver cada tarefa individualmente em detalhe.
 
+# Bônus:
+Realizar o deploy da tarefa executada em algum serviço de Cloud (AWS, Google, Azure), incluindo uma documentação simples dos processos realizados.
+
+# Serão avaliados
+- Código limpo e boas práticas
+- GIT
+- Documentação
+- Testes
+- Criatividade
+
+Você deve publicar o código em um repositório Git público.
+
+Ao finalizar enviar para: bruna@evoe.cc e contato@evoe.cc.
+
+## Como rodar o app
 1- Para baixar todas as dependencias do app antes de rodar:
 ```bash
  yarn install
