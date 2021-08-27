@@ -1,0 +1,4 @@
+{
+  "/posts": "/posts",
+  "/posts/:id": "/posts/:id"
+}

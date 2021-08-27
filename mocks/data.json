@@ -1,0 +1,13 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "A normal post",
+      "smallDescription": "A small post description",
+      "content": "Post content",
+      "author": "wyvern800",
+      "dateInsert": "2021-05-21T01:14:00.221Z",
+      "dateUpdate": "2021-06-26T16:01:12.442Z"
+    }
+  ]
+}
