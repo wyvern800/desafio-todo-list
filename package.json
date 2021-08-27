@@ -1,28 +1,20 @@
 {
-  "name": "base-app-react",
+  "name": "desafio-todo-list",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://github.com/wyvern800/per-front.git",
+  "repository": "https://github.com/wyvern800/desafio-todo-list.git",
   "author": "Matheus Ferreira <matheusguiferreira@hotmail.com>",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
     "bootstrap-icons": "^1.2.2",
     "dotenv-webpack": "^6.0.0",
-    "downshift": "^6.0.10",
-    "json-server": "^0.16.3",
-    "mdbreact": "^5.0.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
     "react-bootstrap-table2-paginator": "^2.1.2",
     "react-dom": "^17.0.1",
     "react-icons": "^4.1.0",
     "react-router-dom": "^5.2.0",
-    "react-search-autocomplete": "^2.0.0",
-    "react-svg-radar-chart": "^1.2.0",
-    "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^2.0.1",
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
@@ -61,8 +53,7 @@
     "historyApiFallback": true
   },
   "scripts": {
-    "dev": "webpack-dev-server  --mode development",
-    "json-server": "json-server --watch mocks/data.json --routes mocks/routes.json --port 3001 --middlewares mocks/middlewares/index.js",
+    "start": "webpack-dev-server  --mode development",
     "build": "webpack --mode production"
   }
 }

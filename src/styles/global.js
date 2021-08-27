@@ -9,7 +9,7 @@ export default createGlobalStyle`
 }
 
 body, html {
-  background-color: rgb(26,27,31);
+  // background-color: rgb(26,27,31);
   margin: auto;
   width: 50%;
 }
