@@ -7,7 +7,7 @@ export default class Header extends Component {
     return (
       <>
         <Container>
-          TODOS lIST
+          TODOS LIST
         </Container>
       </>
     );

@@ -11,7 +11,7 @@ export default class Home extends Component {
   render() {
     return (
       <>
-        <Title name="Home" />
+        <Title name="Todo List" />
         <TodosList/>
       </>
     );

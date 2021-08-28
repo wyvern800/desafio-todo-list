@@ -13,7 +13,6 @@ function App() {
     <>
       <BrowserRouter>
         <ScrollToTop>
-          <Header/>
             <Container fluid="xl" className="main-container">
             <Routes />
             <GlobalStyle />
