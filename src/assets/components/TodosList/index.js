@@ -4,7 +4,9 @@ import { Container, Todos, Completed, ListsWrapper } from './styles';
 
 /**
  * Work flow
-- Menu pequeno ao clicar em cada todo
+- Botão de remover com ícone
+- Ao dar hover no <li> de todos, fazer o botão de remover aparecer para ser clicável, e sumir no off hover, com animação
+  de shrink quando sumir, e expand quando hoverar
 - Mini checkbox ao lado de cada uma - DONE
 - Clicar na checkbox faz com que ela a todo fique apagada e vá para um menu de completed para direita - DONE
 - Menu na direita poderá ser limpo com botão de limpar
@@ -53,7 +55,6 @@ function TodosList() {
   return (
       <>
         <Container>
-
         <form
         onSubmit={event => {
           // Previnir que a página recarrega e resete os estados
@@ -81,24 +82,24 @@ function TodosList() {
         </form>
         <ListsWrapper>
         <Todos>
-        <h1>TODO</h1>
+        <h1>Incompletos</h1>
         <ul>
           {todos.map((todo, idx) => (
             <li key={idx}>
               <input type="checkbox" checked={todo.isCompleted} onChange={(event)=> {handleCompletion(idx, event)}}/>
-              <a href="#">{todo.description}</a>
+              <span>{todo.description}</span>
               <button>Remover</button>
             </li>
           ))}
         </ul>
         </Todos>
         <Completed>
-           <h1>Completed</h1>
+           <h1>Completos</h1>
            <ul>
-          {completedTodos.map((todo, idx) => (
+          {completedTodos.map((completedTodo, idx) => (
             <li key={idx}>
-              <input type="checkbox" checked={todo.isCompleted} disabled={true}/>
-              <a href="#">{todo.description}</a>
+              <input type="checkbox" checked={completedTodo.isCompleted} disabled={true}/>
+              <span>{completedTodo.description}</span>
             </li>
           ))}
         </ul>
