@@ -7,13 +7,7 @@ export default class Header extends Component {
     return (
       <>
         <Container>
-          <ul>
-            <li>
-              <NavLink exact to="/" activeClassName="nav-link-active">
-                Home
-              </NavLink>
-            </li>
-          </ul>
+          TODOS lIST
         </Container>
       </>
     );

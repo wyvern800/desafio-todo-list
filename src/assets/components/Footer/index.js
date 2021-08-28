@@ -4,7 +4,7 @@ export default class Footer extends Component {
   render() {
     return (
       <>
-        foooter seco
+        Feito com amor por Matheus G. Ferreira
       </>
     );
   }
