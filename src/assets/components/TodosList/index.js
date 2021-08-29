@@ -1,7 +1,18 @@
-import React, {useState} from 'react';
-import { FaEdit, FaTrash } from "react-icons/fa";
+import React, { useState } from 'react';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
-import { Container, Todos, Completed, ListsWrapper, Controls, Clear, Errors } from './styles';
+import {
+  Wrapper,
+  Todos,
+  Completed,
+  ListsWrapper,
+  Controls,
+  Clear,
+  Errors,
+  Form,
+  Todo,
+} from './styles';
 
 /**
  * Work flow
@@ -11,56 +22,126 @@ import { Container, Todos, Completed, ListsWrapper, Controls, Clear, Errors } fr
 - Menu na direita poderá ser limpo com botão de limpar - DONE
 - Todo removível - DONE
 - Todo editável
-- Arrumar painel de 'erros'
+- Arrumar painel de 'erros' - DONE
+- Confirmações para Exclusao
  */
 
 function TodosList() {
-  const [value, setValue] = useState("");
-  const [todos, setTodos] = useState([{
-    description: "Cortar umas lenhas",
-    isCompleted: false
-  }]);
+  const [value, setValue] = useState('');
+  const [todos, setTodos] = useState([
+    {
+      description: 'Cortar umas lenhas',
+      isCompleted: false,
+    },
+  ]);
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const [completedTodos, setCompletedTodos] = useState([
     {
-      description: "Dar banho no dog",
-      isCompleted: true
-    }
+      description: 'Dar banho no dog',
+      isCompleted: true,
+    },
   ]);
+
+  const [editing, setEditing] = useState(false);
+  const [edited, setEdited] = useState('');
 
   /**
    * Limpa a lista
    */
   const clear = () => {
-    setError("Limpo com sucesso!")
-
     setCompletedTodos([]);
-  }
+  };
 
   /**
    * Cuida da parte de editar
    * @param {number} index
    */
-  const editTodo = (index) => {
+  const toggleTodoEdition = (index) => {
     console.log(index);
-  }
+
+    setEdited(index);
+
+    setEditing(true);
+
+    // Encontrar o todo com o mesmo id
+    const todo = todos.find((p, i) => index === i);
+
+    console.log('toggleTodoEdition: ' + index);
+
+    setValue(todo.description);
+  };
+
+  /**
+   * Processa o edit do todo
+   * @param {number} index
+   */
+  const processEditTodo = (event) => {
+    event.preventDefault();
+
+    console.log('id: ', edited);
+
+    let todosList = [...todos];
+
+    const todo = todos.find((t, index) => index === edited);
+
+    todosList.splice(edited, 1, todo);
+
+    setTodos(todosList);
+
+    setEditing(false);
+
+    setValue('');
+  };
 
   /**
    * Remove o todo clicado
    * @param {number} index
    */
-  const removeTodo = (index) => {
-
+  const removeTodo = (e, index) => {
     const newTodos = [...todos];
 
     newTodos.splice(index, 1);
 
-    setTodos(newTodos)
+    setTodos(newTodos);
 
-    setError("Deletado com sucesso!");
-  }
+    setEditing(false);
+
+    // Limpar o value caso ele tenha sido preenchido
+    if (value !== "") {
+      setValue("");
+    }
+  };
+
+  /**
+   * Adiciona o todo para o array de todos
+   * @param {event} event
+   */
+  const handleAddTodo = (event) => {
+    // Previnir que a página recarrega e resete os estados
+    event.preventDefault();
+
+    if (value === '') {
+      setError('Campo em branco, digite algo antes de adicionar');
+      return;
+    }
+
+    const newTodosList = [
+      ...todos,
+      {
+        description: value,
+        isCompleted: false,
+      },
+    ];
+
+    setTodos(newTodosList);
+
+    setError('');
+
+    // Limpa o input
+    setValue('');
+  };
 
   /**
    * Cuida da parte de marcar/desmarcar o checkbox dos todos
@@ -68,95 +149,134 @@ function TodosList() {
    * @param {boolean} chkValue O valor atual do checkbox
    */
   const handleCompletion = (index, chkValue) => {
-    const updatedTodos = [...todos];
-    const updatedCompletedTodos = [...completedTodos];
+    let updatedTodos = [...todos];
+    let updatedCompletedTodos = [...completedTodos];
 
-    console.log('index '+ index);
+    console.log('handleCommpletion(index' + index);
 
+    const todoCopy = updatedTodos.find((t, i) => index === i);
+
+    console.log(todoCopy.description);
+
+    updatedCompletedTodos.push(todoCopy);
+
+    setCompletedTodos(updatedCompletedTodos);
+
+    updatedTodos.splice(index, 1);
+
+    setTodos(updatedTodos);
     // updatedTodos[idx].isCompleted = chkValue.target.checked;
     // setTodos(updatedTodos);
     // setCompletedTodos(updatedTodos);
     // updatedCompletedTodos[idx].isCompleted = chkValue.target.checked;
     // console.log(chkValue.target.checked);
-  }
+  };
 
   return (
-      <>
-        <Container>
-        <header>Todo List</header>
-        <form
-        onSubmit={event => {
-          // Previnir que a página recarrega e resete os estados
-          event.preventDefault();
-
-          if (value === '') {
-            setError("Campo em branco, digite algo antes de adicionar");
-            return;
-          }
-
-          const newTodosList = [...todos, {
-            description: value,
-            isCompleted: false
-          }];
-
-          setTodos(newTodosList);
-
-          setError("Adicionado com sucesso");
-
-          // Limpa o input
-          setValue('');
-        }}>
-          <Errors bgColor={error.color}>
-            {error}
-          </Errors>
-          <div>
-        <input
-          className="todo-description"
-          type="text"
-          value={value}
-          placeholder="O que você precisa fazer hoje?"
-          onChange={event => setValue(event.target.value)}
-        />
-        <button type="submit">Adicionar</button>
-        </div>
-        </form>
-        <ListsWrapper>
-        <Todos>
-        <h1>Tasks Incompletas</h1>
-        <ul>
-         { todos.length >= 1 ? <>{todos.map((todo, index) => (
-            <li key={index}>
-              <label htmlFor="description">
-              <input id="description" type="checkbox" checked={todo.isCompleted} onChange={(event)=> handleCompletion(index, event)}/>
-              {todo.description}
-              </label>
-              <Controls>
-              <button className="btn-edit" onClick={() => editTodo(index)}><FaEdit/></button>
-              <button className="btn-remove" onClick={() => removeTodo(index)}><FaTrash/></button>
-              </Controls>
-            </li>
-          ))}</> : <span className="empty">Vazio</span>}
-        </ul>
-        </Todos>
-        <Completed>
-           <h1>Tasks Completas</h1>
-           <ul>
-          { completedTodos.length >= 1 ? <>{ completedTodos.map((completedTodo, index) => (
-            <li key={index}>
-              <label htmlFor="description">
-              <input id="description" type="checkbox" checked={completedTodo.isCompleted} disabled={true}/>
-              {completedTodo.description}
-              </label>
-            </li>
-          ))}</> : <span className="empty">Vazio</span>}
-        </ul>
+    <>
+      <Wrapper>
         <div>
-          { completedTodos.length > 0 && <Clear onClick={()=> clear()}>Limpar</Clear> }
+          <header>
+            Todo List<small>simple</small>
+          </header>
         </div>
-        </Completed>
+        {/** Seção de edição */}
+        {editing ? (
+          <>
+            <Form
+              hasError={!!error}
+              isEditing={!!editing}
+              onSubmit={processEditTodo}
+            >
+              {error && <Errors>{error}</Errors>}
+              <div>
+                <input
+                  className="todo-description"
+                  type="text"
+                  value={value}
+                  onChange={(event) => setValue(event.target.value)}
+                />
+                <button type="submit">Editar</button>
+              </div>
+            </Form>
+          </>
+        ) : (
+          <Form hasError={!!error} onSubmit={handleAddTodo}>
+            {error && <Errors>{error}</Errors>}
+            <div>
+              <input
+                className="todo-description"
+                type="text"
+                value={value}
+                placeholder="O que você precisa fazer hoje?"
+                onChange={(event) => setValue(event.target.value)}
+              />
+              <button type="submit">Adicionar</button>
+            </div>
+          </Form>
+        )}
+
+        <ListsWrapper>
+          <Todos>
+            <h1>Tasks Incompletas</h1>
+            {todos.length >= 1 ? (
+              <>
+                {todos.map((todo, index) => {
+                  return (
+                    <Todo key={index}>
+                      <div
+                        className="todo-description"
+                        onClick={() => handleCompletion(index)}
+                      >
+                        <span>{todo.description}</span>
+                      </div>
+
+                      <Controls>
+                        <button
+                          className="btn-edit"
+                          onClick={() => toggleTodoEdition(index)}
+                        >
+                          <FaEdit />
+                        </button>
+                        <button
+                          className="btn-remove"
+                          onClick={() => removeTodo(index)}
+                        >
+                          <FaTrash />
+                        </button>
+                      </Controls>
+                    </Todo>
+                  );
+                })}
+              </>
+            ) : (
+              <span className="empty">Vazio</span>
+            )}
+          </Todos>
+          <Completed>
+            <h1>Tasks Completas</h1>
+            {completedTodos.length >= 1 ? (
+              <>
+                {completedTodos.map((todo, index) => {
+                  return (
+                    <Todo key={index}>
+                      <span>{todo.description}</span>
+                    </Todo>
+                  );
+                })}
+              </>
+            ) : (
+              <span className="empty">Vazio</span>
+            )}
+            <div>
+              {completedTodos.length > 0 && (
+                <Clear onClick={() => clear()}>Limpar</Clear>
+              )}
+            </div>
+          </Completed>
         </ListsWrapper>
-        </Container>
-      </>
-    );
+      </Wrapper>
+    </>
+  );
 }
 export default TodosList;
