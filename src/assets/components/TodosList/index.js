@@ -25,7 +25,7 @@ import {
 - Todo editável - DONE
 - Arrumar painel de 'erros' - DONE
 - Confirmações para Exclusao
-- Visualizar todos completos - PARTIALLY DONE
+- Visualizar todos completos - DONE
 - Layout responsivo em todos os dispotitivos - DONE
  */
 
@@ -36,13 +36,7 @@ function TodosList() {
   const [completedTodos, setCompletedTodos] = useState([]);
   const [editing, setEditing] = useState(false);
   const [selectedTodo, setSelectedTodo] = useState({});
-  const [todoOpened, setTodoOpened] = useState({
-    todo: {
-      description: "teste farofeiro",
-      isCompleted: true,
-    },
-    opened: true,
-  }); //{ opened: false }
+  const [todoOpened, setTodoOpened] = useState({ opened: false});
   const [modalOpened, setModalOpened] = useState(false);
   const input = useRef(null);
 
