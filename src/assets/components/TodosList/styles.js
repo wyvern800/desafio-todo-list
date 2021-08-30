@@ -363,3 +363,51 @@ export const Errors = styled.div`
     }
   }
 `;
+
+export const TodoInfos = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  div.bread-crumb {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+    span {
+      font-size: 20px;
+      border: 1px solid blue;
+      width: 100%;
+      font-family: 'Roboto', sans-serif;
+      text-transform: capitalize;
+      border: 0;
+      border-radius: 5px 0 0 5px;
+      color: #3a3a3a;
+      border-right: 0;
+      background-color: rgb(238, 238, 238);
+      font-family: 'Roboto', sans-serif;
+      padding-left: 15px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      margin-top: 25px;
+      background: #ffa82e;
+      border-radius: 5px;
+      border: 0;
+      color: #fff;
+      font-weight: bold;
+      transition: background-color 0.2s;
+      min-width: 15%;
+      outline: none;
+
+      // Aplicar estilo ao dar hover
+      &:hover {
+        background: ${shade(0.2, '#ffa82e')};
+      }
+    }
+  }
+`;

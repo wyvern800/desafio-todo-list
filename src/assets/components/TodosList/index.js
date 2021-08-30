@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
-import ReactTooltip from 'react-tooltip';
-import { css } from 'styled-components';
-import { Link } from 'react-router-dom';
-import { Modal } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap';
 
 import {
   Wrapper,
@@ -15,6 +12,7 @@ import {
   Errors,
   Form,
   Todo,
+  TodoInfos,
 } from './styles';
 
 /**
@@ -38,7 +36,13 @@ function TodosList() {
   const [completedTodos, setCompletedTodos] = useState([]);
   const [editing, setEditing] = useState(false);
   const [selectedTodo, setSelectedTodo] = useState({});
-  const [todoOpened, setTodoOpened] = useState({ opened: false });
+  const [todoOpened, setTodoOpened] = useState({
+    todo: {
+      description: "teste farofeiro",
+      isCompleted: true,
+    },
+    opened: true,
+  }); //{ opened: false }
   const [modalOpened, setModalOpened] = useState(false);
   const input = useRef(null);
 
@@ -131,7 +135,7 @@ function TodosList() {
 
     const todo = todos.find((t, i) => index === i);
 
-    setSelectedTodo(todo)
+    setSelectedTodo(todo);
   };
 
   /**
@@ -201,6 +205,8 @@ function TodosList() {
 
     const todoCopy = updatedTodos.find((t, i) => index === i);
 
+    todoCopy.isCompleted = true;
+
     if (debugMode) console.log(todoCopy.description);
 
     updatedCompletedTodos.push(todoCopy);
@@ -226,11 +232,19 @@ function TodosList() {
           onHide={() => removeTodo(selectedTodo)}
         >
           <Modal.Header closeButton>
-            <Modal.Title id="contained-modal-title-vcenter">{selectedTodo.description}</Modal.Title>
+            <Modal.Title id="contained-modal-title-vcenter">
+              {selectedTodo.description}
+            </Modal.Title>
           </Modal.Header>
-          <Modal.Body>Você tem certeza que desweja excluir: {selectedTodo.description}?</Modal.Body>
+          <Modal.Body>
+            Você tem certeza que desweja excluir: {selectedTodo.description}?
+          </Modal.Body>
           <Modal.Footer>
-            <button onClick={() =>removeTodo(selectedTodo)} /*onClick={hideModal}*/>Yes</button>
+            <button
+              onClick={() => removeTodo(selectedTodo)} /*onClick={hideModal}*/
+            >
+              Yes
+            </button>
             <button /*onClick={hideModal}*/>Cancel</button>
           </Modal.Footer>
         </Modal>
@@ -245,8 +259,15 @@ function TodosList() {
           <>
             {todoOpened.todo !== undefined && (
               <>
-                <a onClick={() => setTodoOpened({})}>Voltar</a>
-                <p>{todoOpened.todo.description}</p>
+                <TodoInfos>
+                  <div className="bread-crumb">
+                    Descrição:
+                    <span>{todoOpened.todo.description}</span>
+                    Status:
+                    <span>{todoOpened.todo.isCompleted ? 'Completo' : 'Incompleta'}</span>
+                    <button onClick={() => setTodoOpened({})}>Voltar</button>
+                  </div>
+                </TodoInfos>
               </>
             )}
           </>
@@ -322,8 +343,8 @@ function TodosList() {
                             </button>
                             <button
                               className="btn-remove"
-                              onClick={() =>
-                                removeTodo(index) /*openModal(index) */
+                              onClick={
+                                () => removeTodo(index) /*openModal(index) */
                               }
                             >
                               <FaTrash />
