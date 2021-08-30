@@ -197,7 +197,7 @@ export const ListsWrapper = styled.div`
   // Header das listas
   h1 {
     color: gray;
-    font-size: 25px;
+    font-size: 20px;
     padding: 10px 0;
     width: 100%;
     display: flex;
