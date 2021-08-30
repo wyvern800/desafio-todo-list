@@ -1,20 +1,20 @@
 # desafio-todo-list
 Elaborar um app simples em React para o frontend de uma ToDo List.
-- Deve possuir uma interface responsiva, com boas UI e UX.
-- O usuário deve poder cadastrar, editar e excluir tarefas.
-- O usuário deve poder ver uma lista com todas as suas tarefas, ou ver cada tarefa individualmente em detalhe.
+- [x] (Deve possuir uma interface responsiva, com boas UI e UX.)
+- [x] (O usuário deve poder cadastrar, editar e excluir tarefas.)
+- [x] (O usuário deve poder ver uma lista com todas as suas tarefas, ou ver cada tarefa individualmente em detalhe.)
 
 # Bônus:
-Realizar o deploy da tarefa executada em algum serviço de Cloud (AWS, Google, Azure), incluindo uma documentação simples dos processos realizados.
+- [x] (Realizar o deploy da tarefa executada em algum serviço de Cloud (AWS, Google, Azure), incluindo uma documentação simples dos processos realizados.)
 
 # Serão avaliados
-- Código limpo e boas práticas
-- GIT
-- Documentação
+- [x] (Código limpo e boas práticas)
+- [x] (GIT)
+- [x] (Documentação)
 - Testes
 - Criatividade
 
-Você deve publicar o código em um repositório Git público.
+- [x] (Você deve publicar o código em um repositório Git público.)
 
 Ao finalizar enviar para: bruna@evoe.cc e contato@evoe.cc.
 
