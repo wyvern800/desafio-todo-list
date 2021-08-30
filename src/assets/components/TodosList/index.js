@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 import { css } from 'styled-components';
 import { Link } from 'react-router-dom';
+import { Modal } from 'react-bootstrap'
 
 import {
   Wrapper,
@@ -23,7 +24,7 @@ import {
 - Clicar na checkbox faz com que ela a todo fique apagada e vá para um menu de completed para direita - DONE
 - Menu na direita poderá ser limpo com botão de limpar - DONE
 - Todo removível - DONE
-- Todo editável
+- Todo editável - DONE
 - Arrumar painel de 'erros' - DONE
 - Confirmações para Exclusao
 - Visualizar todos completos - PARTIALLY DONE
@@ -36,8 +37,13 @@ function TodosList() {
   const [error, setError] = useState('');
   const [completedTodos, setCompletedTodos] = useState([]);
   const [editing, setEditing] = useState(false);
-  const [edited, setEdited] = useState('');
+  const [selectedTodo, setSelectedTodo] = useState({});
   const [todoOpened, setTodoOpened] = useState({ opened: false });
+  const [modalOpened, setModalOpened] = useState(false);
+  const input = useRef(null);
+
+  // Pra ligar os consoles.log que eu precisei para testar antes
+  const debugMode = false;
 
   /**
    * Limpa a lista
@@ -51,16 +57,16 @@ function TodosList() {
    * @param {number} index
    */
   const toggleTodoEdition = (index) => {
-    console.log(index);
+    if (debugMode) console.log(index);
 
-    setEdited(index);
+    setSelectedTodo(index);
 
     setEditing(true);
 
     // Encontrar o todo com o mesmo id
     const todo = todos.find((p, i) => index === i);
 
-    console.log('toggleTodoEdition: ' + index);
+    if (debugMode) console.log('toggleTodoEdition: ' + index);
 
     setValue(todo.description);
   };
@@ -70,7 +76,7 @@ function TodosList() {
    * @param {object} openedTodo
    */
   const openTodo = (openedTodo) => {
-    console.log('openTodo ' + openedTodo.description);
+    if (debugMode) console.log('openTodo ' + openedTodo.description);
 
     const theTodo = {
       todo: {
@@ -82,7 +88,7 @@ function TodosList() {
 
     setTodoOpened(theTodo);
 
-    console.log(theTodo);
+    if (debugMode) console.log(theTodo);
   };
 
   /**
@@ -92,19 +98,40 @@ function TodosList() {
   const processEditTodo = (event) => {
     event.preventDefault();
 
-    console.log('id: ', edited);
+    if (debugMode) console.log('id: ', selectedTodo);
 
-    let todosList = [...todos];
+    const newTodos = [...todos];
 
-    const todo = todos.find((t, index) => index === edited);
+    const todo = newTodos.find((t, i) => selectedTodo === i);
 
-    todosList.splice(edited, 1, todo);
+    const newTod = {
+      description: value,
+      isCompleted: todo.isCompleted,
+    };
 
-    setTodos(todosList);
+    var indexTodo = newTodos.indexOf(todo);
+
+    if (selectedTodo > -1) {
+      newTodos.splice(indexTodo, 1, newTod);
+    }
+
+    setTodos(newTodos);
 
     setEditing(false);
 
     setValue('');
+  };
+
+  /**
+   * Abra o modal de confirmação de deleção
+   * @param {number} index
+   */
+  const openModal = (index) => {
+    setModalOpened(true);
+
+    const todo = todos.find((t, i) => index === i);
+
+    setSelectedTodo(todo)
   };
 
   /**
@@ -170,11 +197,11 @@ function TodosList() {
     let updatedTodos = [...todos];
     let updatedCompletedTodos = [...completedTodos];
 
-    console.log('handleCommpletion(index' + index);
+    if (debugMode) console.log('handleCommpletion(index' + index);
 
     const todoCopy = updatedTodos.find((t, i) => index === i);
 
-    console.log(todoCopy.description);
+    if (debugMode) console.log(todoCopy.description);
 
     updatedCompletedTodos.push(todoCopy);
 
@@ -192,11 +219,26 @@ function TodosList() {
 
   return (
     <>
+      {modalOpened && (
+        <Modal
+          show={modalOpened}
+          centered
+          onHide={() => removeTodo(selectedTodo)}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">{selectedTodo.description}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Você tem certeza que desweja excluir: {selectedTodo.description}?</Modal.Body>
+          <Modal.Footer>
+            <button onClick={() =>removeTodo(selectedTodo)} /*onClick={hideModal}*/>Yes</button>
+            <button /*onClick={hideModal}*/>Cancel</button>
+          </Modal.Footer>
+        </Modal>
+      )}
+
       <Wrapper>
         <div>
-          <header>
-            Todo List
-          </header>
+          <header>Todo List</header>
         </div>
         {/** Se a todo estiver aberta, mostar infos sobre ela e um botão de voltar */}
         {todoOpened.opened ? (
@@ -204,7 +246,7 @@ function TodosList() {
             {todoOpened.todo !== undefined && (
               <>
                 <a onClick={() => setTodoOpened({})}>Voltar</a>
-                {todoOpened.todo.description}
+                <p>{todoOpened.todo.description}</p>
               </>
             )}
           </>
@@ -223,7 +265,7 @@ function TodosList() {
                       <span>{error}</span>
                     </Errors>
                   )}
-                  <div>
+                  <div ref={input}>
                     <input
                       className="todo-description"
                       type="text"
@@ -241,7 +283,7 @@ function TodosList() {
                     <span>{error}</span>
                   </Errors>
                 )}
-                <div>
+                <div ref={input}>
                   <input
                     className="todo-description"
                     type="text"
@@ -271,13 +313,18 @@ function TodosList() {
                           <Controls>
                             <button
                               className="btn-edit"
-                              onClick={() => toggleTodoEdition(index)}
+                              onClick={() => {
+                                toggleTodoEdition(index);
+                                input.current.focus();
+                              }}
                             >
                               <FaEdit />
                             </button>
                             <button
                               className="btn-remove"
-                              onClick={() => removeTodo(index)}
+                              onClick={() =>
+                                removeTodo(index) /*openModal(index) */
+                              }
                             >
                               <FaTrash />
                             </button>
@@ -296,7 +343,7 @@ function TodosList() {
                   <>
                     {completedTodos.map((todo, index) => {
                       return (
-                        <Todo key={index}>
+                        <Todo className="completed-todo" key={index}>
                           <div
                             className="todo-description"
                             onClick={() => openTodo(todo)}

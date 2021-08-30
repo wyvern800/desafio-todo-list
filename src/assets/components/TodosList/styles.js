@@ -8,7 +8,7 @@ export const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     font-size: 50px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     font-family: 'Bebas Neue', cursive;
     color: lightgray;
     transition: color 0.2s;
@@ -63,9 +63,9 @@ export const Form = styled.form`
       ${(props) =>
         props.hasError &&
         css`
-          border 2px solid #c53030;
+          border: 2px solid #c53030;
           border-right: 0;
-      `}
+        `}
 
       // Aplica estilo caso este componente seja o foco
       &&:focus {
@@ -90,6 +90,7 @@ export const Form = styled.form`
       font-weight: bold;
       transition: background-color 0.2s;
       min-width: 25%;
+      outline: none;
 
       // Aplicar estilo ao dar hover
       &:hover {
@@ -191,11 +192,16 @@ export const ListsWrapper = styled.div`
 
 // Componente inteiro
 export const Todo = styled.div`
-
   // Muda o tamanho para tela Surface Duo
   @media screen and (max-width: 720px) {
     width: 100%;
     max-width: 450px;
+  }
+
+  .completed-todo {
+    div {
+      border: 1px solid black;
+    }
   }
 
   border: 1px dotted lightgray;
