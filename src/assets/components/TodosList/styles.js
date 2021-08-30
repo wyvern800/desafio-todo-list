@@ -3,35 +3,29 @@ import { shade } from 'polished';
 
 // Wrapper principal
 export const Wrapper = styled.div`
-  // Aplicar estilo em telas menores
-  @media screen and (max-width: 600px) {
-    margin: 2rem auto 0;
-  }
-
-  //border: 1px solid red;
-  padding: 20px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  width: 90vw;
-  max-width: 50rem;
-  margin: 7rem auto 0;
-
   // 'Logo' do site
   header {
     display: flex;
     justify-content: center;
     font-size: 50px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     font-family: 'Bebas Neue', cursive;
     color: lightgray;
     transition: color 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     // Texto pequeno
     small {
-      position: absolute;
       color: gray;
       font-size: 15px;
+      display: flex;
+      margin: 0;
+      padding: 0;
+      margin: -24px;
+      padding-left: 50px;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
 
     // Aplicar hover ao logo
@@ -43,6 +37,10 @@ export const Wrapper = styled.div`
 
 // Formulário de adição / edição do teclado
 export const Form = styled.form`
+  @media screen and (max-width: 600px) {
+    font-size: 12px;
+  }
+
   div {
     display: flex;
     margin-bottom: 10px;
@@ -58,6 +56,8 @@ export const Form = styled.form`
       border-right: 0;
       background-color: rgb(238, 238, 238);
       font-family: 'Roboto', sans-serif;
+
+      min-width: 75%;
 
       // Aplica borda caso haja erros
       ${(props) =>
@@ -89,6 +89,7 @@ export const Form = styled.form`
       color: #fff;
       font-weight: bold;
       transition: background-color 0.2s;
+      min-width: 25%;
 
       // Aplicar estilo ao dar hover
       &:hover {
@@ -120,10 +121,9 @@ export const Controls = styled.div`
     cursor: pointer;
     transition: all 0.3s linear;
     width: 25px;
-    padding: 5px;
-    margin: 0, 2px, 0, 2px;
-
-    border: solid 1px red;
+    padding: 1px;
+    margin: 2px;
+    //border: solid 1px red;
   }
 
   // Botão de editar
@@ -155,27 +155,49 @@ export const ListsWrapper = styled.div`
     flex-direction: column;
   }
 
-  //border: 1px solid orange;
+  //border: 1px solid orangge;
   display: flex;
   justify-content: space-evenly;
   align-content: center;
   align-items: baseline;
 
+  // Component vazio (listas)
   .empty {
-    color: hsla(243, 3%, 75%, 0.3);
+    color: hsla(243, 3%, 75%, 0.2);
     display: flex;
     justify-content: center;
+    width: 100%;
+    font-size: 17px;
+    //border: 1px solid black;
   }
 
+  // Header das listas
   h1 {
     color: gray;
     font-size: 25px;
     padding: 10px 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    border-bottom: 2px dotted lightgray;
+    border-spacing: 30px;
+
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+    //border: 1px solid black;
   }
 `;
 
 // Componente inteiro
 export const Todo = styled.div`
+
+  // Muda o tamanho para tela Surface Duo
+  @media screen and (max-width: 720px) {
+    width: 100%;
+    max-width: 450px;
+  }
+
   border: 1px dotted lightgray;
 
   border-radius: 3px;
@@ -198,7 +220,6 @@ export const Todo = styled.div`
 
   // Área clicável para a interação
   div.todo-description {
-    border: 1px solid green;
     border-radius: 3px;
     display: block;
     padding: 8px;
@@ -209,6 +230,10 @@ export const Todo = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    //border: 1px solid green;
+
+    //max-height: 15px;
   }
 
   // Para aplicar margem somente nos componentes depois do primeiro
@@ -249,12 +274,23 @@ export const Todo = styled.div`
 export const Clear = styled.div`
   cursor: pointer;
   margin-top: 10px;
+
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 `;
 
 // Container de todos incompletos
 export const Todos = styled.div`
+  //border: 1px solid blue;
+
   @media screen and (max-width: 600px) {
     width: 100%;
+    margin-bottom: 3px;
+  }
+
+  // Muda o tamanho para tela Surface Duo
+  @media only screen and (max-width: 720px) {
+    width: 100%;
+    max-width: 580px;
   }
 
   display: flex;
@@ -262,33 +298,62 @@ export const Todos = styled.div`
   flex-direction: column;
   align-items: center;
   flex-grow: 1;
-  margin: 8px;
+  max-width: 328px;
+  margin: 3px;
 `;
 
 // Container de todos completos
 export const Completed = styled.div`
+  //border: 1px solid blue;
+
   @media screen and (max-width: 600px) {
     width: 100%;
   }
+
+  // Muda o tamanho para tela Surface Duo
+  @media only screen and (max-width: 720px) {
+    width: 100%;
+    max-width: 580px;
+  }
+
   display: flex;
   //border: 1px solid blue;
   flex-direction: column;
   align-items: center;
   flex-grow: 1;
+  max-width: 328px;
+  margin: 3px;
 `;
 
 // Divzinha de erros
 export const Errors = styled.div`
+  color: ${(props) => (props.color ? props.color : 'white')};
+  width: 100%;
   margin-bottom: 1rem;
-  height: 1.25rem;
   display: flex;
   align-items: center;
   text-align: center;
   justify-content: center;
-  font-size: 0.9rem;
   text-transform: capitalize;
-  border: 1px dashed gray;
-  padding: 12px;
-  font-family: 'Roboto', sans-serif;
-  background-color: ${(props) => (props.bgColor ? props.bgColor : 'white')};
+  border: 1px dashed ${(props) => props.color};
+
+  // Aplica hover ao passar o mouse em cima
+  &:hover {
+    border-color: ${(props) => shade(0.1, props.color)};
+    color: ${(props) => shade(0.1, props.color)};
+  }
+
+  // Texto dentro
+  span {
+    font-family: 'Roboto', sans-serif;
+  }
+
+  // Aplica estilos a telas menores
+  @media screen and (max-width: 600px) {
+    span {
+      font-size: 11px;
+      color: red;
+      padding: 5px;
+    }
+  }
 `;

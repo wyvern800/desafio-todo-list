@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
+import { css } from 'styled-components';
+import { Link } from 'react-router-dom';
 
 import {
   Wrapper,
@@ -24,28 +26,18 @@ import {
 - Todo editável
 - Arrumar painel de 'erros' - DONE
 - Confirmações para Exclusao
+- Visualizar todos completos - PARTIALLY DONE
+- Layout responsivo em todos os dispotitivos - DONE
  */
 
 function TodosList() {
   const [value, setValue] = useState('');
-  const [todos, setTodos] = useState([
-    {
-      description: 'Cortar umas lenhas',
-      isCompleted: false,
-    },
-  ]);
-
+  const [todos, setTodos] = useState([]);
   const [error, setError] = useState('');
-
-  const [completedTodos, setCompletedTodos] = useState([
-    {
-      description: 'Dar banho no dog',
-      isCompleted: true,
-    },
-  ]);
-
+  const [completedTodos, setCompletedTodos] = useState([]);
   const [editing, setEditing] = useState(false);
   const [edited, setEdited] = useState('');
+  const [todoOpened, setTodoOpened] = useState({ opened: false });
 
   /**
    * Limpa a lista
@@ -74,6 +66,26 @@ function TodosList() {
   };
 
   /**
+   * Abrir informações do todo
+   * @param {object} openedTodo
+   */
+  const openTodo = (openedTodo) => {
+    console.log('openTodo ' + openedTodo.description);
+
+    const theTodo = {
+      todo: {
+        description: openedTodo.description,
+        isCompleted: openedTodo.isCompleted,
+      },
+      opened: true,
+    };
+
+    setTodoOpened(theTodo);
+
+    console.log(theTodo);
+  };
+
+  /**
    * Processa o edit do todo
    * @param {number} index
    */
@@ -99,18 +111,24 @@ function TodosList() {
    * Remove o todo clicado
    * @param {number} index
    */
-  const removeTodo = (e, index) => {
+  const removeTodo = (index, e) => {
     const newTodos = [...todos];
 
-    newTodos.splice(index, 1);
+    const todo = newTodos.find((t, i) => index === i);
+
+    var indexTodo = newTodos.indexOf(todo);
+
+    if (index > -1) {
+      newTodos.splice(indexTodo, 1);
+    }
 
     setTodos(newTodos);
 
     setEditing(false);
 
     // Limpar o value caso ele tenha sido preenchido
-    if (value !== "") {
-      setValue("");
+    if (value !== '') {
+      setValue('');
     }
   };
 
@@ -123,7 +141,7 @@ function TodosList() {
     event.preventDefault();
 
     if (value === '') {
-      setError('Campo em branco, digite algo antes de adicionar');
+      setError('Digite algo antes de adicionar!');
       return;
     }
 
@@ -177,104 +195,130 @@ function TodosList() {
       <Wrapper>
         <div>
           <header>
-            Todo List<small>simple</small>
+            Todo List
           </header>
         </div>
-        {/** Seção de edição */}
-        {editing ? (
+        {/** Se a todo estiver aberta, mostar infos sobre ela e um botão de voltar */}
+        {todoOpened.opened ? (
           <>
-            <Form
-              hasError={!!error}
-              isEditing={!!editing}
-              onSubmit={processEditTodo}
-            >
-              {error && <Errors>{error}</Errors>}
-              <div>
-                <input
-                  className="todo-description"
-                  type="text"
-                  value={value}
-                  onChange={(event) => setValue(event.target.value)}
-                />
-                <button type="submit">Editar</button>
-              </div>
-            </Form>
+            {todoOpened.todo !== undefined && (
+              <>
+                <a onClick={() => setTodoOpened({})}>Voltar</a>
+                {todoOpened.todo.description}
+              </>
+            )}
           </>
         ) : (
-          <Form hasError={!!error} onSubmit={handleAddTodo}>
-            {error && <Errors>{error}</Errors>}
-            <div>
-              <input
-                className="todo-description"
-                type="text"
-                value={value}
-                placeholder="O que você precisa fazer hoje?"
-                onChange={(event) => setValue(event.target.value)}
-              />
-              <button type="submit">Adicionar</button>
-            </div>
-          </Form>
+          <>
+            {editing ? (
+              <>
+                {/** Seção de edição */}
+                <Form
+                  hasError={!!error}
+                  isEditing={!!editing}
+                  onSubmit={processEditTodo}
+                >
+                  {error && (
+                    <Errors color={'red'}>
+                      <span>{error}</span>
+                    </Errors>
+                  )}
+                  <div>
+                    <input
+                      className="todo-description"
+                      type="text"
+                      value={value}
+                      onChange={(event) => setValue(event.target.value)}
+                    />
+                    <button type="submit">Editar</button>
+                  </div>
+                </Form>
+              </>
+            ) : (
+              <Form hasError={!!error} onSubmit={handleAddTodo}>
+                {error && (
+                  <Errors color={'red'}>
+                    <span>{error}</span>
+                  </Errors>
+                )}
+                <div>
+                  <input
+                    className="todo-description"
+                    type="text"
+                    value={value}
+                    placeholder="O que você precisa fazer hoje?"
+                    onChange={(event) => setValue(event.target.value)}
+                  />
+                  <button type="submit">Adicionar</button>
+                </div>
+              </Form>
+            )}
+            <ListsWrapper>
+              <Todos>
+                <h1>Tasks Incompletas</h1>
+                {todos.length >= 1 ? (
+                  <>
+                    {todos.map((todo, index) => {
+                      return (
+                        <Todo key={index}>
+                          <div
+                            className="todo-description"
+                            onClick={() => handleCompletion(index)}
+                          >
+                            <span>{todo.description}</span>
+                          </div>
+
+                          <Controls>
+                            <button
+                              className="btn-edit"
+                              onClick={() => toggleTodoEdition(index)}
+                            >
+                              <FaEdit />
+                            </button>
+                            <button
+                              className="btn-remove"
+                              onClick={() => removeTodo(index)}
+                            >
+                              <FaTrash />
+                            </button>
+                          </Controls>
+                        </Todo>
+                      );
+                    })}
+                  </>
+                ) : (
+                  <span className="empty">Vazio</span>
+                )}
+              </Todos>
+              <Completed>
+                <h1>Tasks Completas</h1>
+                {completedTodos.length >= 1 ? (
+                  <>
+                    {completedTodos.map((todo, index) => {
+                      return (
+                        <Todo key={index}>
+                          <div
+                            className="todo-description"
+                            onClick={() => openTodo(todo)}
+                          >
+                            <span>{todo.description}</span>
+                          </div>
+                        </Todo>
+                      );
+                    })}
+                  </>
+                ) : (
+                  <span className="empty">Vazio</span>
+                )}
+                <div>
+                  {completedTodos.length > 0 && (
+                    <Clear onClick={() => clear()}>Limpar</Clear>
+                  )}
+                </div>
+              </Completed>
+            </ListsWrapper>
+          </>
         )}
-
-        <ListsWrapper>
-          <Todos>
-            <h1>Tasks Incompletas</h1>
-            {todos.length >= 1 ? (
-              <>
-                {todos.map((todo, index) => {
-                  return (
-                    <Todo key={index}>
-                      <div
-                        className="todo-description"
-                        onClick={() => handleCompletion(index)}
-                      >
-                        <span>{todo.description}</span>
-                      </div>
-
-                      <Controls>
-                        <button
-                          className="btn-edit"
-                          onClick={() => toggleTodoEdition(index)}
-                        >
-                          <FaEdit />
-                        </button>
-                        <button
-                          className="btn-remove"
-                          onClick={() => removeTodo(index)}
-                        >
-                          <FaTrash />
-                        </button>
-                      </Controls>
-                    </Todo>
-                  );
-                })}
-              </>
-            ) : (
-              <span className="empty">Vazio</span>
-            )}
-          </Todos>
-          <Completed>
-            <h1>Tasks Completas</h1>
-            {completedTodos.length >= 1 ? (
-              <>
-                {completedTodos.map((todo, index) => {
-                  return (
-                    <Todo key={index}>
-                      <span>{todo.description}</span>
-                    </Todo>
-                  );
-                })}
-              </>
-            ) : (
-              <span className="empty">Vazio</span>
-            )}
-            <div>
-              {completedTodos.length > 0 && (
-                <Clear onClick={() => clear()}>Limpar</Clear>
-              )}
-            </div>
-          </Completed>
-        </ListsWrapper>
       </Wrapper>
     </>
   );
