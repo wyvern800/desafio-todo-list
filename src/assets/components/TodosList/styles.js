@@ -391,6 +391,7 @@ export const TodoInfos = styled.div`
       font-family: 'Roboto', sans-serif;
       padding-left: 15px;
       margin-bottom: 15px;
+      word-wrap:  normal;
     }
 
     button {
