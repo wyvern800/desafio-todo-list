@@ -33,12 +33,7 @@ import {
 
 function TodosList() {
   const [value, setValue] = useState('');
-  const [todos, setTodos] = useState([
-    {
-      description: 'farofinha',
-      isCompleted: false,
-    },
-  ]);
+  const [todos, setTodos] = useState([]);
   const [error, setError] = useState('');
   const [completedTodos, setCompletedTodos] = useState([]);
   const [editing, setEditing] = useState(false);
