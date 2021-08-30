@@ -467,3 +467,21 @@ export const TodoInfos = styled.div`
     }
   }
 `;
+
+export const ModalButton = styled.button`
+  margin-top: 25px;
+      background: gray;
+      border-radius: 5px;
+      border: 0;
+      color: #fff;
+      font-weight: bold;
+      transition: background-color 0.2s;
+      min-width: 15%;
+      outline: none;
+
+      // Aplicar estilo ao dar hover
+      &:hover {
+        background: ${shade(0.2, 'gray')};
+      }
+    }
+`;

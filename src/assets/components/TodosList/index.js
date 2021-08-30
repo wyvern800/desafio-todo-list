@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaEdit, FaTrash, FaRegEye, FaCheck } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaRegEye, FaCheck, FaTimes } from 'react-icons/fa';
 import { Modal } from 'react-bootstrap';
 import { parseISO, isAfter, format } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
@@ -15,6 +15,7 @@ import {
   Form,
   Todo,
   TodoInfos,
+  ModalButton
 } from './styles';
 
 /**
@@ -141,14 +142,15 @@ function TodosList() {
    * @param {number} index
    */
   const removeTodo = (index, e) => {
-
     const newTodos = [...todos];
 
     const todo = newTodos.find((t, i) => t === index);
 
     var indexTodo = newTodos.indexOf(todo);
 
-    console.log('removeTodo(index='+indexTodo+", desc="+todo.description+")")
+    console.log(
+      'removeTodo(index=' + indexTodo + ', desc=' + todo.description + ')'
+    );
 
     if (indexTodo > -1) {
       newTodos.splice(indexTodo, 1);
@@ -246,23 +248,30 @@ function TodosList() {
           onHide={() => removeTodo(selectedTodo)}
         >
           <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter"> {/**id="contained-modal-title-vcenter" */}
-            Excluir tarefa?
+            <Modal.Title id="contained-modal-title-vcenter">
+              {' '}
+              {/**id="contained-modal-title-vcenter" */}
+              Excluir tarefa?
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            A tarefa <b>{selectedTodo.description}</b> será excluida, você tem certeza?
+            A tarefa <b>{selectedTodo.description}</b> será excluida, você tem
+            certeza?
           </Modal.Body>
           <Modal.Footer>
-            <button
+            <ModalButton
               onClick={() => {
-                removeTodo(selectedTodo)
-                setModalOpened(false)
+                removeTodo(selectedTodo);
+                setModalOpened(false);
               }} /*onClick={hideModal}*/
             >
-              Sim
-            </button>
-            <button onClick={()=> setModalOpened(false)}>Cancelar</button>
+              Excluir
+            </ModalButton>
+            <ModalButton
+              onClick={() => setModalOpened(false)}
+            >
+              Cancelar
+            </ModalButton>
           </Modal.Footer>
         </Modal>
       )}
