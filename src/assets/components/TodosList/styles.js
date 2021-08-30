@@ -13,9 +13,26 @@ export const Wrapper = styled.div`
     color: lightgray;
     transition: color 0.2s;
     display: flex;
-    flex-direction: column;
+
     align-items: center;
 
+    span.stronger,
+    .stronger2 {
+      display: flex;
+      justify-content: center;
+      font-size: 50px;
+      font-family: 'Bebas Neue', cursive;
+      color: lightgray;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      color: ${shade(0.2, 'lightgray')};
+    }
+
+    span.stronger2 {
+      margin-left: 10px;
+      color: ${shade(0.2, 'lightgray')};
+    }
     // Texto pequeno
     small {
       color: gray;
@@ -26,11 +43,6 @@ export const Wrapper = styled.div`
       margin: -24px;
       padding-left: 50px;
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    }
-
-    // Aplicar hover ao logo
-    &:hover {
-      color: ${shade(0.2, 'gray')};
     }
   }
 `;
@@ -75,7 +87,6 @@ export const Form = styled.form`
       // Aplica estilo ao placeholder do input
       &::placeholder {
         color: #a8a8b3;
-        text-align: center;
       }
     }
 
@@ -116,19 +127,30 @@ export const Form = styled.form`
 export const Controls = styled.div`
   // Propriedades compartilhadas entre os dois botões
   button.btn-remove,
-  .btn-edit {
+  .btn-edit,
+  .btn-mark {
     background: transparent;
     border-color: transparent;
     cursor: pointer;
     transition: all 0.3s linear;
     width: 25px;
     padding: 1px;
-    margin: 2px;
+    margin: 1px;
     //border: solid 1px red;
   }
 
   // Botão de editar
   .btn-edit {
+    color: gray;
+
+    // Aplicar hover ao botão
+    &:hover {
+      color: ${shade(0.2, 'gray')};
+    }
+  }
+
+  // Botão de marcar
+  .btn-mark {
     color: hsl(125, 71%, 66%);
 
     // Aplicar hover ao botão
@@ -139,11 +161,11 @@ export const Controls = styled.div`
 
   // Botão de remover
   .btn-remove {
-    color: hsl(360, 71%, 66%);
+    color: gray;
 
     // Aplicar hover ao botão
     &:hover {
-      color: ${shade(0.2, 'hsl(360, 71%, 66%)')};
+      color: ${shade(0.2, 'gray')};
     }
   }
 `;
@@ -192,6 +214,9 @@ export const ListsWrapper = styled.div`
 
 // Componente inteiro
 export const Todo = styled.div`
+  border: 1px dotted ${shade(0.3, 'lightgray')};
+  box-shadow: 0 3px 6px rgb(0 0 0 / 10%);
+
   // Muda o tamanho para tela Surface Duo
   @media screen and (max-width: 720px) {
     width: 100%;
@@ -204,7 +229,15 @@ export const Todo = styled.div`
     }
   }
 
-  border: 1px dotted lightgray;
+  // Aplica estilo caso ele esteja completo
+  ${(props) =>
+    props.isCompleted &&
+    css`
+      text-decoration: line-through;
+      color: ${shade(0.2, 'lightgray')};
+      border: 1px dotted lightgray;
+      box-shadow: none;
+    `}
 
   border-radius: 3px;
   margin: 2px;
@@ -212,8 +245,6 @@ export const Todo = styled.div`
   align-items: center;
   justify-content: space-between;
   background-color: hsl(210, 36%, 96%);
-  box-shadow: 0 3px 6px rgb(0 0 0 / 8%);
-
   width: 100%;
   max-width: 325px;
   max-height: 42px;
@@ -226,20 +257,42 @@ export const Todo = styled.div`
 
   // Área clicável para a interação
   div.todo-description {
+    max-width: 74%;
+
+    @media screen and (max-width: 600px) {
+      max-width: 29%;
+      width: 100%;
+    }
+
+    @media screen and (max-width: 720px) {
+      max-width: 60%;
+      width: 100%;
+    }
+
+    @media screen and (max-width: 730px) {
+      max-width: 61%;
+      width: 100%;
+    }
+
     border-radius: 3px;
     display: block;
     padding: 8px;
     margin: 0;
     cursor: pointer;
     width: 100%;
-    max-width: 72%;
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 11px;
 
-    //border: 1px solid green;
+    border: 1px solid green;
 
     //max-height: 15px;
+  }
+
+  div.todo-description2 {
+    max-width: 100%;
   }
 
   // Para aplicar margem somente nos componentes depois do primeiro
@@ -340,7 +393,6 @@ export const Errors = styled.div`
   align-items: center;
   text-align: center;
   justify-content: center;
-  text-transform: capitalize;
   border: 1px dashed ${(props) => props.color};
 
   // Aplica hover ao passar o mouse em cima
@@ -377,12 +429,11 @@ export const TodoInfos = styled.div`
     align-items: center;
     width: 100%;
 
-    span {
+    p {
       font-size: 20px;
       border: 1px solid blue;
       width: 100%;
       font-family: 'Roboto', sans-serif;
-      text-transform: capitalize;
       border: 0;
       border-radius: 5px 0 0 5px;
       color: #3a3a3a;
@@ -391,7 +442,11 @@ export const TodoInfos = styled.div`
       font-family: 'Roboto', sans-serif;
       padding-left: 15px;
       margin-bottom: 15px;
-      word-wrap:  normal;
+      white-space: nowrap;
+      overflow: hidden;
+      max-width: 100%;
+      word-break: normal;
+      text-transform: capitalize;
     }
 
     button {

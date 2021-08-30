@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaRegEye, FaCheck } from 'react-icons/fa';
 import { Modal } from 'react-bootstrap';
+import { parseISO, isAfter, format } from 'date-fns';
+import pt from 'date-fns/locale/pt-BR';
 
 import {
   Wrapper,
@@ -31,12 +33,17 @@ import {
 
 function TodosList() {
   const [value, setValue] = useState('');
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState([
+    {
+      description: 'farofinha',
+      isCompleted: false,
+    },
+  ]);
   const [error, setError] = useState('');
   const [completedTodos, setCompletedTodos] = useState([]);
   const [editing, setEditing] = useState(false);
   const [selectedTodo, setSelectedTodo] = useState({});
-  const [todoOpened, setTodoOpened] = useState({ opened: false});
+  const [todoOpened, setTodoOpened] = useState({ opened: false });
   const [modalOpened, setModalOpened] = useState(false);
   const input = useRef(null);
 
@@ -80,6 +87,7 @@ function TodosList() {
       todo: {
         description: openedTodo.description,
         isCompleted: openedTodo.isCompleted,
+        completedAt: openedTodo.completedAt,
       },
       opened: true,
     };
@@ -105,6 +113,7 @@ function TodosList() {
     const newTod = {
       description: value,
       isCompleted: todo.isCompleted,
+      completedAt: {},
     };
 
     var indexTodo = newTodos.indexOf(todo);
@@ -137,13 +146,16 @@ function TodosList() {
    * @param {number} index
    */
   const removeTodo = (index, e) => {
+
     const newTodos = [...todos];
 
-    const todo = newTodos.find((t, i) => index === i);
+    const todo = newTodos.find((t, i) => t === index);
 
     var indexTodo = newTodos.indexOf(todo);
 
-    if (index > -1) {
+    console.log('removeTodo(index='+indexTodo+", desc="+todo.description+")")
+
+    if (indexTodo > -1) {
       newTodos.splice(indexTodo, 1);
     }
 
@@ -166,7 +178,7 @@ function TodosList() {
     event.preventDefault();
 
     if (value === '') {
-      setError('Digite algo antes de adicionar!');
+      setError('Digite a tarefa antes de adicinar.');
       return;
     }
 
@@ -201,6 +213,8 @@ function TodosList() {
 
     todoCopy.isCompleted = true;
 
+    todoCopy.completedAt = new Date().getTime();
+
     if (debugMode) console.log(todoCopy.description);
 
     updatedCompletedTodos.push(todoCopy);
@@ -217,6 +231,17 @@ function TodosList() {
     // console.log(chkValue.target.checked);
   };
 
+  /**
+   * Retorna uma data formatada pra disposição depois
+   * @param {Date} date
+   */
+  const getFormattedDate = (date) => {
+    const formattedDate = format(date, " dd 'de' MMMM', às ' HH:mm'h'", {
+      locale: pt,
+    });
+    return formattedDate;
+  };
+
   return (
     <>
       {modalOpened && (
@@ -225,28 +250,35 @@ function TodosList() {
           centered
           onHide={() => removeTodo(selectedTodo)}
         >
-          <Modal.Header closeButton>
-            <Modal.Title id="contained-modal-title-vcenter">
-              {selectedTodo.description}
+          <Modal.Header>
+            <Modal.Title id="contained-modal-title-vcenter"> {/**id="contained-modal-title-vcenter" */}
+            Excluir tarefa?
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Você tem certeza que desweja excluir: {selectedTodo.description}?
+            A tarefa <b>{selectedTodo.description}</b> será excluida, você tem certeza?
           </Modal.Body>
           <Modal.Footer>
             <button
-              onClick={() => removeTodo(selectedTodo)} /*onClick={hideModal}*/
+              onClick={() => {
+                removeTodo(selectedTodo)
+                setModalOpened(false)
+              }} /*onClick={hideModal}*/
             >
-              Yes
+              Sim
             </button>
-            <button /*onClick={hideModal}*/>Cancel</button>
+            <button onClick={()=> setModalOpened(false)}>Cancelar</button>
           </Modal.Footer>
         </Modal>
       )}
 
       <Wrapper>
         <div>
-          <header>Todo List</header>
+          <header>
+            <span className="stronger">T</span>o
+            <span className="stronger">D</span>o
+            <span className="stronger2">L</span>ist
+          </header>
         </div>
         {/** Se a todo estiver aberta, mostar infos sobre ela e um botão de voltar */}
         {todoOpened.opened ? (
@@ -256,9 +288,18 @@ function TodosList() {
                 <TodoInfos>
                   <div className="bread-crumb">
                     Descrição:
-                    <span>{todoOpened.todo.description}</span>
+                    <p>{todoOpened.todo.description}</p>
                     Status:
-                    <span>{todoOpened.todo.isCompleted ? 'Completo' : 'Incompleta'}</span>
+                    <p>
+                      {todoOpened.todo.isCompleted ? (
+                        <>
+                          Concluído em
+                          {getFormattedDate(todoOpened.todo.completedAt)}
+                        </>
+                      ) : (
+                        'Incompleta'
+                      )}
+                    </p>
                     <button onClick={() => setTodoOpened({})}>Voltar</button>
                   </div>
                 </TodoInfos>
@@ -285,6 +326,7 @@ function TodosList() {
                       className="todo-description"
                       type="text"
                       value={value}
+                      maxLength="70"
                       onChange={(event) => setValue(event.target.value)}
                     />
                     <button type="submit">Editar</button>
@@ -303,7 +345,8 @@ function TodosList() {
                     className="todo-description"
                     type="text"
                     value={value}
-                    placeholder="O que você precisa fazer hoje?"
+                    placeholder="O que você precisa fazer?"
+                    maxLength="70"
                     onChange={(event) => setValue(event.target.value)}
                   />
                   <button type="submit">Adicionar</button>
@@ -312,15 +355,15 @@ function TodosList() {
             )}
             <ListsWrapper>
               <Todos>
-                <h1>Tasks Incompletas</h1>
+                <h1>Tarefas Incompletas</h1>
                 {todos.length >= 1 ? (
                   <>
                     {todos.map((todo, index) => {
                       return (
-                        <Todo key={index}>
+                        <Todo key={index} isCompleted={todo.isCompleted}>
                           <div
                             className="todo-description"
-                            onClick={() => handleCompletion(index)}
+                            onClick={() => openTodo(todo)} //handleCompletion(index)
                           >
                             <span>{todo.description}</span>
                           </div>
@@ -330,7 +373,6 @@ function TodosList() {
                               className="btn-edit"
                               onClick={() => {
                                 toggleTodoEdition(index);
-                                input.current.focus();
                               }}
                             >
                               <FaEdit />
@@ -338,10 +380,16 @@ function TodosList() {
                             <button
                               className="btn-remove"
                               onClick={
-                                () => removeTodo(index) /*openModal(index) */
+                                () => openModal(index) /*removeTodo(index) */
                               }
                             >
                               <FaTrash />
+                            </button>
+                            <button
+                              className="btn-mark"
+                              onClick={() => handleCompletion(index)}
+                            >
+                              <FaCheck />
                             </button>
                           </Controls>
                         </Todo>
@@ -349,18 +397,22 @@ function TodosList() {
                     })}
                   </>
                 ) : (
-                  <span className="empty">Vazio</span>
+                  <span className="empty">Sem tarefas</span>
                 )}
               </Todos>
               <Completed>
-                <h1>Tasks Completas</h1>
+                <h1>Tarefas Completas</h1>
                 {completedTodos.length >= 1 ? (
                   <>
                     {completedTodos.map((todo, index) => {
                       return (
-                        <Todo className="completed-todo" key={index}>
+                        <Todo
+                          className="completed-todo"
+                          key={index}
+                          isCompleted={todo.isCompleted}
+                        >
                           <div
-                            className="todo-description"
+                            className="todo-description todo-description2"
                             onClick={() => openTodo(todo)}
                           >
                             <span>{todo.description}</span>
@@ -370,7 +422,7 @@ function TodosList() {
                     })}
                   </>
                 ) : (
-                  <span className="empty">Vazio</span>
+                  <span className="empty">Sem tarefas</span>
                 )}
                 <div>
                   {completedTodos.length > 0 && (
