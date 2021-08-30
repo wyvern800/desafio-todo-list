@@ -286,7 +286,7 @@ export const Todo = styled.div`
     text-overflow: ellipsis;
     font-size: 11px;
 
-    border: 1px solid green;
+    //border: 1px solid green;
 
     //max-height: 15px;
   }
