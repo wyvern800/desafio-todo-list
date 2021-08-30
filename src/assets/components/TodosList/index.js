@@ -26,7 +26,7 @@ import {
 - Todo removível - DONE
 - Todo editável - DONE
 - Arrumar painel de 'erros' - DONE
-- Confirmações para Exclusao
+- Confirmações para Exclusao - DONE
 - Visualizar todos completos - DONE
 - Layout responsivo em todos os dispotitivos - DONE
  */
