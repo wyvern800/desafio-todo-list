@@ -19,17 +19,22 @@ Elaborar um app simples em React para o frontend de uma ToDo List.
 Ao finalizar enviar para: bruna@evoe.cc e contato@evoe.cc.
 
 ## Como rodar o app
-1- Para baixar todas as dependencias do app antes de rodar:
+1- Eu curto usar o yarn por ele ser mais rápido, então vamos instalá-lo:
 ```bash
- yarn install
+npm install --global yarn          Depois de instalá-lo digite: yarn --version e veja se ele funciona
 ```
 
-2- Rodar o app:
+2- Para baixar todas as dependencias do app antes de rodar:
 ```bash
-yarn start
+ yarn install                   ou npm install
 ```
 
-3- Pronto! agora é só usar o link abaixo no navegador para vê-la
+3- Rodar o app:
+```bash
+yarn start                      ou npm start
+```
+
+4- Pronto! agora é só usar o link abaixo no navegador para vê-la
 ```bash
 http://localhost:8080/
 ```
