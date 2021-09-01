@@ -15,7 +15,7 @@ import {
   Form,
   Todo,
   TodoInfos,
-  ModalButton
+  ModalButton,
 } from './styles';
 
 /**
@@ -51,7 +51,21 @@ function TodosList() {
    */
   const clear = () => {
     setCompletedTodos([]);
+    localStorage.setItem("completedTodos", []);
   };
+
+  // Similar ao componentDidMount e componentDidUpdate:
+  useEffect(() => {
+    const todos = localStorage.getItem("todos");
+    const completedTodos = localStorage.getItem("completedTodos")
+
+    if (todos) {
+      setTodos(JSON.parse(todos));
+    }
+    if (completedTodos) {
+      setCompletedTodos(JSON.parse(completedTodos));
+    }
+  }, []);
 
   /**
    * Cuida da parte de editar
@@ -120,6 +134,8 @@ function TodosList() {
 
     setTodos(newTodos);
 
+    localStorage.setItem("todos", JSON.stringify(newTodos));
+
     setEditing(false);
 
     setValue('');
@@ -158,6 +174,8 @@ function TodosList() {
 
     setTodos(newTodos);
 
+    localStorage.setItem("todos", JSON.stringify(newTodos));
+
     setEditing(false);
 
     // Limpar o value caso ele tenha sido preenchido
@@ -189,6 +207,8 @@ function TodosList() {
 
     setTodos(newTodosList);
 
+    localStorage.setItem("todos", JSON.stringify(newTodosList));
+
     setError('');
 
     // Limpa o input
@@ -218,9 +238,13 @@ function TodosList() {
 
     setCompletedTodos(updatedCompletedTodos);
 
+    localStorage.setItem("completedTodos", JSON.stringify(updatedCompletedTodos));
+
     updatedTodos.splice(index, 1);
 
     setTodos(updatedTodos);
+
+    localStorage.setItem("todos", JSON.stringify(updatedTodos));
     // updatedTodos[idx].isCompleted = chkValue.target.checked;
     // setTodos(updatedTodos);
     // setCompletedTodos(updatedTodos);
@@ -267,9 +291,7 @@ function TodosList() {
             >
               Excluir
             </ModalButton>
-            <ModalButton
-              onClick={() => setModalOpened(false)}
-            >
+            <ModalButton onClick={() => setModalOpened(false)}>
               Cancelar
             </ModalButton>
           </Modal.Footer>
